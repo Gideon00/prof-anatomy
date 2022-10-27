@@ -11,16 +11,18 @@
 
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block script %}{% endblock %}
         <title>Anatomy Practice {% block title %}{% endblock %}</title>
     </head>
     <body>
 		{% block main %}	
 		{% endblock %}
-
+    <div class="section">
 		<footer class="mb-5 small text-center text-muted">
             <h4>&#9888; Disclaimer!!! &#9888;</h4>
             <p>Data Gotten from Interactive Anatomy Text Series. Purchase textbook from the appropriate Authority to use this webapp</p>
             App Developed for web by <a href="https://gideon00.github.io/">rabboni</a>
         </footer>
+    </div>
     </body>
 </html>

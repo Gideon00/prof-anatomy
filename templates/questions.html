@@ -1,5 +1,24 @@
 {% extends "layout.html" %}
 
+{% block script %}
+    <script>
+        function toggle()
+        {
+            let scoe = document.querySelector('#score');
+            if (scoe.style.visibility == 'hidden')
+            {
+                score.style.visibility = 'visible';
+                document.querySelector('#hide').value = 'hide';
+            }
+            else
+            {
+                score.style.visibility = 'hidden'
+                document.querySelector('#hide').value = 'see';
+            }
+        }
+    </script>
+{% endblock %}
+
 {% block title %}
     Questions
 {% endblock %}
@@ -14,6 +33,7 @@
 
 			<div class="section">
                 {% if start < limit %}
+                <p>Good luck!</p>
 				<form action="/add" method="post">
 					<table>
 						<thead>
@@ -51,33 +71,49 @@
 								<input name="last" value="{{ start+5 }}" type="hidden">
 								<td><input type="radio" value="T" name="group4"></td>
 								<td><input type="radio" value="F" name="group4"></td>
-							</tr>
-							
+							</tr>		
 						</tbody>
 					</table>
-					<br>
-					<input type="submit" value="next">
-				</form>
-                {% else %}
-                <h3>You have reached the End</h3>
-                {% endif %}
-				<br>
-                
-            <div class="section">
-                <p>Quit and <a href="{{ url_for('index') }}">Start Over</a></p>
-            </div>
 
-			<div class="section">
-				{% if current_med_score %}
-				<center>
-					<form action="/end">
-						<input type="submit" value="End">
-					</form>
-				</center>
-			</div>
-			
-			<div class="section">
-				<p>Good luck!</p>
-			</div>
+					    <input style="float: right;" type="submit" value="next">
+				    
+                </form>
+                <br>
+            </div>
+                {% else %}
+                <div class="section">
+                    <h3>You have reached the End</h3>
+                </div>
+                {% endif %}
+            <br>  
+            {% if current_med_score %}
+            <div class="section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <form action="/end">
+                                    <input type="submit" value="End">
+                                </form>
+                            </th>
+                            <th>    
+                                <p style="visibility: hidden;" id="score"> score = {{ current_score }} </p>
+                            </th>
+                            <th>
+                                <form onsubmit="toggle(); return false;">
+                                    <input id="hide" type="submit" value="see">
+                                </form>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
 			{% endif %}
+
+            <div class="section">
+                <center>
+                    <p>Quit and <a href="{{ url_for('index') }}">Start Over</a></p>
+                </center>
+            </div>
+        </div>
 {% endblock %}
