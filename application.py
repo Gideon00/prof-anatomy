@@ -1,5 +1,6 @@
 
 import csv
+from email.mime import application
 from flask import Flask, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
@@ -102,7 +103,7 @@ def add():
 				session["mark_scheme"].append(row["Answer"])
 				session["Questions"].append(int(row["Question"]))
 
-		score, med_score, failures = check()
+		score, med_score, x = check()
 
 		# Close file
 		file.close()
@@ -133,13 +134,21 @@ def check():
 
 	for n in range(len(user_answer)):
 
+		# Check if user answer is correct
 		if user_answer[n] == marking_scheme[n]:
 			score += 1
+		
+		# Check if answer is wrong
 		elif user_answer[n] != "Z":
 			medical += 0.5
-			session["failures"].add(users_failures[n])
+			session["failures"].add(f"{users_failures[n]}. {marking_scheme[n]}")
 
+		# Check if answer is null
 		if user_answer[n] == "Z":
-			session["failures"].add(users_failures[n])
+			session["failures"].add(f"{users_failures[n]}. {marking_scheme[n]}")
+
 
 	return score, score-medical, session["failures"]
+
+if __name__ == "__main__":
+	application.run()
