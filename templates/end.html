@@ -15,12 +15,13 @@
 			<p>Total Score {{ score }}</p>
             <p>Total Score Negative marking Scheme {{ scoreN }}</p>
 			<h4>{{ per }}%</h4>
-            <p>Questions failed viz;</p>
+            <p>Questions failed and correct answers viz;</p>
             {% if failed %}
             <ul>
                 {% for fail in failed %}
                     <li>{{ fail }}</li>
                 {% endfor %}
+                <h6>The answer(s) above are the corrections!!</h6>
             </ul>
             {% else %}
             <p>None</p>
