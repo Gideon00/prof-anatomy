@@ -23,6 +23,10 @@ REGIONS = [
 	"Abdomen",
 	"Pelvis",
 	"Perineum",
+	"Back",
+    	"Head",
+    	"Neck",
+    	"Face",
 ]
 
 
