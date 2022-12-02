@@ -117,7 +117,7 @@ def add():
 
 		return render_template("questions.html", start=session["current_num"], current_score=score, current_med_score=med_score, limit=session["limit"], region=session["region"])
 
-@app.route("/undo", methods=["GET", "POST"])
+@application.route("/undo", methods=["GET", "POST"])
 def undo():
 	# delete last 5 input from list
 	for _ in range(5):
