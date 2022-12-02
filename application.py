@@ -72,7 +72,7 @@ def index():
 		session["answers"] = []
 		session["mark_scheme"] = []
 		session["Questions"] = []
-		session["failures"] = set()
+		session["failures"] = []
 
 		return render_template("questions.html", start=session["start"], limit=session["limit"], region=session["region"])
 	
@@ -107,7 +107,7 @@ def add():
 				session["mark_scheme"].append(row["Answer"])
 				session["Questions"].append(int(row["Question"]))
 
-		score, med_score, x = check()
+		score, med_score, _ = check()
 
 		# Close file
 		file.close()
@@ -116,6 +116,26 @@ def add():
 		session["current_num"] = int(request.form.get("last"))
 
 		return render_template("questions.html", start=session["current_num"], current_score=score, current_med_score=med_score, limit=session["limit"], region=session["region"])
+
+@app.route("/undo", methods=["GET", "POST"])
+def undo():
+	# delete last 5 input from list
+	for _ in range(5):
+		if session["failures"]:
+			session["failures"].pop()
+		session["answers"].pop()
+		session["Questions"].pop()
+		session["mark_scheme"].pop()
+
+	# Call check to update scores
+	score, med_score, _ = check()
+
+	# Get first number of previous page
+	session["current_num"] = session["current_num"] - 5
+
+	# Return previous page
+	return render_template("questions.html", start=session["current_num"], current_score=score, current_med_score=med_score, limit=session["limit"], region=session["region"])
+	
 
 @application.route("/end", methods=["GET", "POST"])
 def end():
@@ -142,17 +162,18 @@ def check():
 		if user_answer[n] == marking_scheme[n]:
 			score += 1
 		
-		# Check if answer is wrong
-		elif user_answer[n] != "Z":
-			medical += 0.5
-			session["failures"].add(f"{users_failures[n]}. {marking_scheme[n]}")
-
 		# Check if answer is null
-		if user_answer[n] == "Z":
-			session["failures"].add(f"{users_failures[n]}. {marking_scheme[n]}")
+		elif user_answer[n] == "Z":
+			if f"{users_failures[n]}. {marking_scheme[n]}" not in session["failures"]:
+				session["failures"].append(f"{users_failures[n]}. {marking_scheme[n]}")
+		
+		# Check if answer is wrong
+		else:
+			medical += 0.5
+			if f"{users_failures[n]}. {marking_scheme[n]}" not in session["failures"]:
+				session["failures"].append(f"{users_failures[n]}. {marking_scheme[n]}")
 
 
 	return score, score-medical, session["failures"]
-
 if __name__ == "__main__":
 	application.run()
